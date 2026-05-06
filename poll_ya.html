@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивный опрос</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #4a5568;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .qr-info {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .voting-section {
+            padding: 30px;
+            display: none;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option {
+            padding: 15px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            background: #edf2f7;
+            border-color: #a0aec0;
+        }
+
+        .results-section {
+            padding: 30px;
+            display: block;
+        }
+
+        .result-bar {
+            margin-bottom: 25px;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .bar-container {
+            height: 40px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+
+        .bar-1 { background: #48bb78; }
+        .bar-2 { background: #ed8936; }
+        .bar-3 { background: #dd6b20; }
+        .bar-4 { background: #9f7aea; }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .total-votes {
+            text-align: center;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            .question {
+                font-size: 20px;
+            }
+            
+            .option {
+                padding: 12px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="question">Какой ваш любимый тип кофе?</h1>
+            <p class="qr-info">Отсканируйте QR‑код для голосования</p>
+        </div>
+        
+        <!-- Секция голосования для аудитории -->
+        <div id="votingSection" class="voting-section">
+            <h2 style="text-align: center; margin-bottom: 20px;">Выберите вариант:</h2>
+            <div class="options">
+                <div class="option" data-value="0">Эспрессо</div>
+                <div class="option" data-value="1">Американо</div>
+                <div class="option" data-value="2">Капучино</div>
+                <div class="option" data-value="3">Латте</div>
+            </div>
+        </div>
+
+        <!-- Секция результатов для презентации -->
+        <div id="resultsSection" class="results-section">
+            <h2 class="question">Какой ваш любимый тип кофе?</h2>
+            
+            <div class="result-bar">
+                <div class="bar-label">
+                    <span>Эспрессо</span>
+                    <span id="percent1">0%</span>
+                </div>
+                <div class="bar-container">
+                    <div id="bar1" class="bar bar-1" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="result-bar">
+                <div class="bar-label">
+                    <span>Американо</span>
+                    <span id="percent2">0%</span>
+                </div>
+                <div class="bar-container">
+                    <div id="bar2" class="bar bar-2" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="result-bar">
+                <div class="bar-label">
+                    <span>Капучино</span>
+                    <span id="percent3">0%</span>
+                </div>
+                <div class="bar-container">
+                    <div id="bar3" class="bar bar-3" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="result-bar">
+                <div class="bar-label">
+                    <span>Латте</span>
+                    <span id="percent4">0%</span>
+                </div>
+                <div class="bar-container">
+                    <div id="bar4" class="bar bar-4" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="total-votes">Всего голосов: <span id="totalVotes">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные опроса
+        const pollData = {
+            question: "Какой ваш любимый тип кофе?",
+            options: ["Эспрессо", "Американо", "Капучино", "Латте"],
+            votes: [0, 0, 0, 0]
+        };
+
+        // Определяем режим: голосование или результаты
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode') || 'vote';
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            // Устанавливаем вопрос
+            document.querySelectorAll('.question').forEach(el => {
+                el.textContent = pollData.question;
+            });
+
+            if (mode === 'results') {
+                // Режим результатов
+                showResults();
+                updateResultsDisplay();
+                // Обновляем результаты каждые 2 секунды
+                setInterval(updateResultsDisplay, 2000);
+            } else {
+                //
